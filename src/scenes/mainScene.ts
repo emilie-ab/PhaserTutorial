@@ -22,7 +22,7 @@ export default class MainScene extends Phaser.Scene {
         const star = s as Phaser.Physics.Arcade.Image
         star.disableBody(true, true)
         this.score += 10
-        this.scoreText?.setText('score:' + this.score)
+        this.scoreText.setText('score:' + this.score)
 
         if (this.stars?.countActive(true) === 0) {
             this.stars.children.iterate(c => {
@@ -41,13 +41,7 @@ export default class MainScene extends Phaser.Scene {
 
 
     }
-    private handleHitBomb(player:
-        | Phaser.Types.Physics.Arcade.GameObjectWithBody
-        | Phaser.Tilemaps.Tile,
-    b:
-        | Phaser.Types.Physics.Arcade.GameObjectWithBody
-        | Phaser.Tilemaps.Tile 
-    ) {
+    private handleHitBomb() {
         this.physics.pause()
         this.player?.setTint(0xff0000)
         this.player?.anims.play("turn")
@@ -131,20 +125,24 @@ export default class MainScene extends Phaser.Scene {
     
 
     update() {
-        if (this.cursors?.left?.isDown) {
-            this.player?.setVelocityX(-160)
-            this.player?.anims.play('left', true)
+        if (this.player && this.cursors) {
+            if (this.cursors.left.isDown) {
+                this.player.setVelocityX(-160)
+                this.player.anims.play('left', true)
+            }
+            else if (this.cursors.right.isDown) {
+                this.player.setVelocityX(160)
+                this.player.anims.play('right', true)
+            }
+            else {
+                this.player.setVelocityX(0)
+                this.player.anims.play('turn', true)
+            }
+            if (this.cursors.up.isDown && this.player.body?.touching.down) {
+                this.player.setVelocity(-330)
+            
         }
-        else if (this.cursors?.right.isDown) {
-            this.player?.setVelocityX(160)
-            this.player?.anims.play('right', true)
-        }
-        else {
-            this.player?.setVelocityX(0)
-            this.player?.anims.play('turn', true)
-        }
-        if (this.cursors?.up.isDown && this.player?.body?.touching.down) {
-            this.player.setVelocity(-330)
-        }
+        
     }
+}
 }
